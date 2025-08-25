@@ -9,6 +9,14 @@ type userStoreType = {
   logout: () => void;
 };
 
+type feedStoreType = {
+  users: User[];
+  setUsers: (users: User[]) => void;
+  appendUsers: (users: User[]) => void;
+  addUser: (user: User) => void;
+  removeUser: (userId: string) => void;
+};
+
 const useUserStore = create<userStoreType>((set, get) => ({
   user: null,
   setInitialUser: (user: User) => set({ user }),
@@ -24,4 +32,20 @@ const useUserStore = create<userStoreType>((set, get) => ({
   },
 }));
 
-export default useUserStore;
+const useFeedStore = create<feedStoreType>((set) => ({
+  users: [],
+  setUsers: (users) => set({ users }),
+  appendUsers(users) {
+    set((state) => ({ users: [...state.users, ...users] }));
+  },
+  addUser(user) {
+    set((state) => ({ users: [...state.users, user] }));
+  },
+  removeUser(userId) {
+    set((state) => ({
+      users: state.users.filter((user) => user._id !== userId),
+    }));
+  },
+}));
+
+export { useUserStore, useFeedStore };

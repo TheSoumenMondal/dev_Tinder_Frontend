@@ -30,9 +30,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <div className="w-full relative flex items-center flex-col px-4">
+            <div className="w-full relative flex items-center flex-col">
               <Navbar />
-              {children}
+              <main className="w-full px-4">{children}</main>
             </div>
             <Toaster />
           </ThemeProvider>

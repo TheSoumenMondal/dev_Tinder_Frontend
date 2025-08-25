@@ -7,9 +7,7 @@ export interface User {
   email: string;
   password: string;
   avatarUrl?: string;
-  projects: string[];
-  followers: string[];
-  following: string[];
+  connectionCount : number;
   createdAt: string;
   updatedAt: string;
 }

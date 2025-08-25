@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import useUserStore from "@/utils/store";
+import {useUserStore} from "@/utils/store";
 
 export const useAuth = (requireAuth: boolean = true) => {
   const { user, isAuthenticated } = useUserStore();

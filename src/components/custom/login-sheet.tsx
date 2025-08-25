@@ -10,13 +10,12 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import Link from "next/link";
 import { useState } from "react";
 import { userApi } from "@/apis/user-api";
 import axiosInstance from "@/utils/axios-instance";
-import useUserStore from "@/utils/store";
+import {useUserStore} from "@/utils/store";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -33,6 +32,9 @@ interface LoginSheetProps {
   triggerSize?: "default" | "sm" | "lg" | "icon";
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  className?: string;
+  onTriggerClick?: () => void;
+  renderTrigger?: boolean;
 }
 
 type LoginFormData = {
@@ -46,7 +48,10 @@ export function LoginSheet({
   triggerVariant = "default",
   triggerSize = "sm",
   open,
+  className,
   onOpenChange,
+  onTriggerClick,
+  renderTrigger = true,
 }: LoginSheetProps) {
   const {
     register,
@@ -95,18 +100,27 @@ export function LoginSheet({
     }
   };
 
+  const handleTriggerClick = () => {
+    // Call the external callback first (to close mobile menu)
+    onTriggerClick?.();
+    // Then open the login sheet after a small delay to ensure mobile menu closes first
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 100);
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
+      {renderTrigger && (
         <Button
           size={triggerSize}
           variant={triggerVariant}
-          className={`text-xs ${triggerClassName}`}
+          className={`${triggerClassName}`}
+          onClick={handleTriggerClick}
         >
           {triggerContent}
         </Button>
-      </SheetTrigger>
-
+      )}
       <SheetContent
         side="bottom"
         className="fixed left-1/2 w-full max-w-3xl -translate-x-1/2 rounded-t-2xl border bg-background shadow-lg p-6 md:pb-0"

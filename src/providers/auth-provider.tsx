@@ -2,7 +2,7 @@
 
 import { userApi } from "@/apis/user-api";
 import axiosInstance from "@/utils/axios-instance";
-import useUserStore from "@/utils/store";
+import {useUserStore} from "@/utils/store";
 import LoadingSpinner from "@/components/common/loading-spinner";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
