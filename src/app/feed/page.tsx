@@ -12,53 +12,94 @@ import FeedCard from "@/components/custom/feed-card";
 const FeedPage = () => {
   const { user, isLoading } = useRequireAuth();
 
-  const { users, setUsers, appendUsers } = useFeedStore();
+  const { users, setUsers, appendUsers, clearUsers } = useFeedStore();
   const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [initialized, setInitialized] = useState<boolean>(false);
+  const fetchingRef = useRef<boolean>(false);
   const limit = 10;
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const fetchFeedUsers = useCallback(
     async (pageToLoad = 1) => {
+      // Prevent duplicate requests
+      if (fetchingRef.current) {
+        console.log("Already fetching, skipping request for page", pageToLoad);
+        return [];
+      }
+
       try {
+        fetchingRef.current = true;
         setLoading(true);
+        console.log("Starting fetch for page", pageToLoad);
+
         const response = await axiosInstance.get(
           `${userApi.getFeedData}?page=${pageToLoad}&limit=${limit}`
         );
         const data = response.data.data || [];
         console.log("Fetched feed page", pageToLoad, data);
+
         if (pageToLoad === 1) {
           setUsers(data);
+          setPage(1);
         } else {
           appendUsers(data);
+          setPage(pageToLoad);
         }
+
+        if (data.length < limit) {
+          setHasMore(false);
+          console.log("No more data available");
+        }
+
         return data;
       } catch (error) {
+        console.error("Error fetching feed:", error);
         toast.error("Something went wrong.");
         return [];
       } finally {
         setLoading(false);
+        fetchingRef.current = false;
       }
     },
-    [appendUsers, setUsers]
+    [appendUsers, setUsers, limit]
   );
 
+  // Initialize feed data only once per user
   useEffect(() => {
-    // load first page
-    fetchFeedUsers(1);
-  }, [fetchFeedUsers]);
+    if (!initialized && !isLoading && user) {
+      console.log("Initializing feed for user:", user._id);
+      setInitialized(true);
+      clearUsers(); // Clear any stale data
+      fetchFeedUsers(1);
+    }
+  }, [initialized, isLoading, user?._id, fetchFeedUsers, clearUsers]);
 
-  // Auto load next page when sentinel becomes visible or when users is empty
+  // Reset state when user changes
   useEffect(() => {
+    return () => {
+      if (user) {
+        console.log("Cleaning up feed state");
+        setInitialized(false);
+        setPage(1);
+        setHasMore(true);
+        fetchingRef.current = false;
+      }
+    };
+  }, [user?._id]);
+
+  // Auto load next page when sentinel becomes visible - only when needed
+  useEffect(() => {
+    if (!hasMore || loading || !initialized || fetchingRef.current) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(async (entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && !fetchingRef.current && hasMore) {
+            console.log("Sentinel intersecting, loading next page");
             const nextPage = page + 1;
-            const data = await fetchFeedUsers(nextPage);
-            if (data.length > 0) {
-              setPage(nextPage);
-            }
+            await fetchFeedUsers(nextPage);
           }
         });
       },
@@ -66,34 +107,30 @@ const FeedPage = () => {
     );
 
     const el = sentinelRef.current;
-    if (el) observer.observe(el);
+    if (el && hasMore) observer.observe(el);
     return () => {
       if (el) observer.unobserve(el);
       observer.disconnect();
     };
-  }, [fetchFeedUsers, page]);
+  }, [hasMore, loading, initialized, page]);
 
-  // Fallback: when the local users list is nearly exhausted (e.g. after reacting and removing items),
-  // proactively fetch the next page. This handles cases where the sentinel is already intersecting
-  // and doesn't emit another intersection change.
+  // Fallback: when the local users list is nearly exhausted - debounced
   useEffect(() => {
-    const shouldFetchNext = users.length <= 1 && !loading;
-    if (!shouldFetchNext) return;
+    if (!hasMore || loading || !initialized || fetchingRef.current) return;
 
-    let cancelled = false;
-    (async () => {
-      const nextPage = page + 1;
-      const data = await fetchFeedUsers(nextPage);
-      if (cancelled) return;
-      if (data.length > 0) {
-        setPage(nextPage);
-      }
-    })();
+    const shouldFetchNext = users.length <= 1;
+    if (shouldFetchNext) {
+      console.log("Users running low, fetching next page");
+      const timeoutId = setTimeout(() => {
+        if (!fetchingRef.current && hasMore) {
+          const nextPage = page + 1;
+          fetchFeedUsers(nextPage);
+        }
+      }, 100); // Small debounce
 
-    return () => {
-      cancelled = true;
-    };
-  }, [users.length, loading, page, fetchFeedUsers]);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [users.length, hasMore, loading, initialized, page]);
 
   if (isLoading || loading) {
     return <LoadingSpinner />;
@@ -106,7 +143,6 @@ const FeedPage = () => {
   return (
     <div className="w-full h-screen flex items-center justify-center">
       {users.length > 0 ? <FeedCard user={users[0]} /> : "No user found."}
-      {/* sentinel element observed by IntersectionObserver to auto-load next page */}
       <div
         ref={sentinelRef}
         aria-hidden="true"

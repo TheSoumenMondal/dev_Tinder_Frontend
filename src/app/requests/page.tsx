@@ -5,11 +5,10 @@ import PreviewRequestCard, {
   PreviewRequestCardProps,
 } from "@/components/custom/preview-request-card";
 import LoadingSpinner from "@/components/common/loading-spinner";
-import { Button } from "@/components/ui/button";
 import axiosInstance from "@/utils/axios-instance";
 import React, { useEffect, useState, useMemo } from "react";
 import { toast } from "sonner";
-import { RefreshCw, Users, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 
 const RequestPage = () => {
   const [pendingRequests, setPendingRequests] = useState<
@@ -40,15 +39,10 @@ const RequestPage = () => {
     }
   };
 
-  const handleRefresh = () => {
-    getPendingRequest(true);
-  };
-
   useEffect(() => {
     getPendingRequest();
   }, []);
 
-  // Filter only interested requests
   const interestedRequests = useMemo(() => {
     return pendingRequests.filter((request) => request.status === "interested");
   }, [pendingRequests]);
@@ -67,22 +61,6 @@ const RequestPage = () => {
   return (
     <div className="pt-16 w-full min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
-        {/* Header Section */}
-        <div className="flex flex-col space-y-6 mb-8">
-          {/* Stats */}
-          <div className="bg-muted/50 rounded-lg p-4">
-            <div className="flex items-center space-x-2">
-              <Heart className="w-5 h-5 text-primary" />
-              <span className="font-medium">
-                {interestedRequests.length}{" "}
-                {interestedRequests.length === 1 ? "person is" : "people are"}{" "}
-                interested in connecting
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Results Section */}
         {interestedRequests.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
@@ -98,7 +76,7 @@ const RequestPage = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 grid-cols-1">
             {interestedRequests.map((request) => (
               <PreviewRequestCard
                 key={`${request._id}-${request.senderId._id}`}

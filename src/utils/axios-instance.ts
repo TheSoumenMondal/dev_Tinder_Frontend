@@ -9,16 +9,12 @@ const axiosInstance = axios.create({
   },
 });
 
-// Add response interceptor to handle common errors
 axiosInstance.interceptors.response.use(
   (response) => {
-    // Return successful responses as-is
     return response;
   },
   (error) => {
-    // Handle different types of errors
     if (error.response?.status === 401) {
-      // Don't log 401 errors as they're expected when user is not authenticated
       console.log("🔐 Authentication required");
     } else if (error.response?.status >= 500) {
       console.error("🔥 Server error:", error.response.status);
@@ -26,7 +22,6 @@ axiosInstance.interceptors.response.use(
       console.error("🌐 Network error:", error.message);
     }
 
-    // Always reject the promise so the calling code can handle it
     return Promise.reject(error);
   }
 );

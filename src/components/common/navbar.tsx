@@ -12,7 +12,7 @@ import { userApi } from "@/apis/user-api";
 import axiosInstance from "@/utils/axios-instance";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Menu, User, LogOut, Home, Heart } from "lucide-react";
+import { Menu, User, LogOut, Home, Heart, Users, Inbox } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -75,6 +75,11 @@ const Navbar = () => {
                   Requests
                 </Button>
               </Link>
+              <Link href="/connections">
+                <Button variant="ghost" size="sm" className="hover:bg-accent">
+                  Connections
+                </Button>
+              </Link>
               <Link href="/profile">
                 <Button variant="ghost" size="sm" className="hover:bg-accent">
                   Profile
@@ -128,6 +133,33 @@ const Navbar = () => {
                           </Button>
                         </Link>
                       </SheetClose>
+
+                      <SheetClose asChild>
+                        <Link href="/requests" className="block">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full justify-start gap-3 h-10"
+                          >
+                            <Inbox className="w-4 h-4" />
+                            <span>Requests</span>
+                          </Button>
+                        </Link>
+                      </SheetClose>
+
+                      <SheetClose asChild>
+                        <Link href="/connections" className="block">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full justify-start gap-3 h-10"
+                          >
+                            <Users className="w-4 h-4" />
+                            <span>Connections</span>
+                          </Button>
+                        </Link>
+                      </SheetClose>
+
                       <SheetClose asChild>
                         <Link href="/profile" className="block">
                           <Button
@@ -140,6 +172,7 @@ const Navbar = () => {
                           </Button>
                         </Link>
                       </SheetClose>
+
                       <div className="flex justify-start pl-3">
                         <MobileThemeToggle />
                       </div>

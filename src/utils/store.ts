@@ -15,6 +15,7 @@ type feedStoreType = {
   appendUsers: (users: User[]) => void;
   addUser: (user: User) => void;
   removeUser: (userId: string) => void;
+  clearUsers: () => void;
 };
 
 const useUserStore = create<userStoreType>((set, get) => ({
@@ -46,6 +47,7 @@ const useFeedStore = create<feedStoreType>((set) => ({
       users: state.users.filter((user) => user._id !== userId),
     }));
   },
+  clearUsers: () => set({ users: [] }),
 }));
 
 export { useUserStore, useFeedStore };

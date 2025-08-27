@@ -3,7 +3,6 @@
 import { useRequireAuth } from "@/hooks/useAuth";
 import LoadingSpinner from "@/components/common/loading-spinner";
 import { useUserStore } from "@/utils/store";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -26,7 +25,6 @@ const ProfilePage = () => {
   const [bio, setBio] = useState<string>(user?.bio || "");
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Update form state when user data loads
   useEffect(() => {
     if (user) {
       setFirstName(user.firstName || "");
@@ -114,8 +112,6 @@ const ProfilePage = () => {
           >
             {loading ? "Saving..." : "Save Changes"} <IconDeviceFloppy />{" "}
           </Button>
-          {/* Pass a draft user object to PreviewDialog so preview reflects form state
-              without mutating global store until update succeeds */}
           <PreviewDialog
             buttonStyle="w-full md:col-span-2"
             user={{

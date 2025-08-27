@@ -36,7 +36,7 @@ const PreviewCard = ({ user }: Props) => {
     bioText.split(" ").length > 15
       ? bioText.split(" ").slice(0, 15).join(" ") + "..."
       : bioText;
-  const age = user.age ?? 0;
+  const age = typeof user.age === "number" && !isNaN(user.age) ? user.age : 0;
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -57,7 +57,7 @@ const PreviewCard = ({ user }: Props) => {
 
         <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
           <h1 className="text-2xl font-bold mb-1">
-            {fullName}, {age}
+            {fullName}, {String(age)}
           </h1>
           <p className="text-sm opacity-90 mb-1">{username}</p>
           <p className="text-sm opacity-90">{bioPreview}</p>
