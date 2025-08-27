@@ -1,5 +1,3 @@
-// BACKEND_URL=http://localhost:5000/api/v1
-
 import envConfig from "@/config/envConfig";
 
 export const userApi = {
