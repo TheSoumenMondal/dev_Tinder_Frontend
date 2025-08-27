@@ -65,7 +65,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex items-center justify-center py-8 w-full h-full flex-col md:bg-card rounded-md bg-transparent">
+    <div className="flex items-center justify-center py-8 w-full max-w-md h-full flex-col md:bg-card rounded-md bg-transparent">
       <Card className="w-full max-w-lg  min-w-sm bg-transparent md:bg-card border-none md:border shadow-none">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>

@@ -11,7 +11,6 @@ const ConnectionsPage = () => {
   const getMyConnectionRequests = async () => {
     try {
       const res = await axiosInstance.get(connectionApi.getMyRequests);
-      console.log(res.data.data);
       setConnections(res.data.data);
     } catch (error) {}
   };

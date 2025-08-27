@@ -10,6 +10,7 @@ import { User } from "@/types";
 import axiosInstance from "@/utils/axios-instance";
 import { useFeedStore } from "@/utils/store";
 import { connectionApi } from "@/apis/connection-api";
+import { toast } from "sonner";
 
 type Props = {
   user: User;
@@ -54,12 +55,16 @@ const FeedCard = ({ user }: Props) => {
         receiverId: id,
         status: status,
       });
-      console.log(response.data);
-      // Remove the user from feed so next user becomes visible
+      if (response.status === 200) {
+        toast.success(
+          status === "interested"
+            ? "You showed interest!"
+            : "You ignored the user."
+        );
+      }
       removeUser(id);
     } catch (error) {
-      console.error("Error reacting to user:", error);
-      // optional: toast error
+      toast.error("Something went wrong. Please try again.");
     }
   };
 

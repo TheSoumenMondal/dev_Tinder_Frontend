@@ -25,20 +25,17 @@ const FeedPage = () => {
     async (pageToLoad = 1) => {
       // Prevent duplicate requests
       if (fetchingRef.current) {
-        console.log("Already fetching, skipping request for page", pageToLoad);
         return [];
       }
 
       try {
         fetchingRef.current = true;
         setLoading(true);
-        console.log("Starting fetch for page", pageToLoad);
 
         const response = await axiosInstance.get(
           `${userApi.getFeedData}?page=${pageToLoad}&limit=${limit}`
         );
         const data = response.data.data || [];
-        console.log("Fetched feed page", pageToLoad, data);
 
         if (pageToLoad === 1) {
           setUsers(data);
@@ -50,7 +47,6 @@ const FeedPage = () => {
 
         if (data.length < limit) {
           setHasMore(false);
-          console.log("No more data available");
         }
 
         return data;
@@ -69,7 +65,6 @@ const FeedPage = () => {
   // Initialize feed data only once per user
   useEffect(() => {
     if (!initialized && !isLoading && user) {
-      console.log("Initializing feed for user:", user._id);
       setInitialized(true);
       clearUsers(); // Clear any stale data
       fetchFeedUsers(1);
@@ -80,7 +75,6 @@ const FeedPage = () => {
   useEffect(() => {
     return () => {
       if (user) {
-        console.log("Cleaning up feed state");
         setInitialized(false);
         setPage(1);
         setHasMore(true);
@@ -97,7 +91,6 @@ const FeedPage = () => {
       (entries) => {
         entries.forEach(async (entry) => {
           if (entry.isIntersecting && !fetchingRef.current && hasMore) {
-            console.log("Sentinel intersecting, loading next page");
             const nextPage = page + 1;
             await fetchFeedUsers(nextPage);
           }
@@ -120,7 +113,6 @@ const FeedPage = () => {
 
     const shouldFetchNext = users.length <= 1;
     if (shouldFetchNext) {
-      console.log("Users running low, fetching next page");
       const timeoutId = setTimeout(() => {
         if (!fetchingRef.current && hasMore) {
           const nextPage = page + 1;

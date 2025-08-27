@@ -63,7 +63,6 @@ const PreviewRequestCard = ({
         `${connectionApi.updateConnectionStatus}/${action}/${_id}`
       );
 
-      console.log(`Request ${action} response:`, response.data);
 
       toast.success(`Request ${action} successfully`);
 

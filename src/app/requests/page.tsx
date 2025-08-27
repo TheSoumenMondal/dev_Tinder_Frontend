@@ -8,34 +8,27 @@ import LoadingSpinner from "@/components/common/loading-spinner";
 import axiosInstance from "@/utils/axios-instance";
 import React, { useEffect, useState, useMemo } from "react";
 import { toast } from "sonner";
-import { Heart } from "lucide-react";
 
 const RequestPage = () => {
   const [pendingRequests, setPendingRequests] = useState<
     PreviewRequestCardProps[]
   >([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const getPendingRequest = async (showRefreshIndicator = false) => {
     try {
       if (showRefreshIndicator) {
-        setIsRefreshing(true);
       } else {
         setIsLoading(true);
       }
-
       const response = await axiosInstance.get(
         connectionApi.getUserConnections
       );
-      console.log("Pending Requests:", response.data);
       setPendingRequests(response.data.data || []);
     } catch (error) {
       toast.error("Error fetching pending requests");
-      console.error("Error fetching pending requests:", error);
     } finally {
       setIsLoading(false);
-      setIsRefreshing(false);
     }
   };
 
@@ -62,18 +55,12 @@ const RequestPage = () => {
     <div className="pt-16 w-full min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-4xl">
         {interestedRequests.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="w-24 h-24 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
-              <Heart className="w-12 h-12 text-muted-foreground" />
+          <div>
+            <div className="flex flex-col items-center justify-center mt-20">
+              <h2 className="text-sm font-semibold mb-2">
+                No Interested Requests Yet
+              </h2>
             </div>
-            <h3 className="text-xl font-semibold mb-2">
-              No connection requests
-            </h3>
-            <p className="text-muted-foreground max-w-md mx-auto">
-              You don't have any pending connection requests yet. Your requests
-              will appear here when someone shows interest in connecting with
-              you.
-            </p>
           </div>
         ) : (
           <div className="grid gap-4 grid-cols-1">

@@ -1,15 +1,25 @@
+"use client";
+
 import { connectionType } from "@/types";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "../ui/button";
+import { IconMessage } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 type Props = {
   data: connectionType;
 };
 
 const ConnectionCard = ({ data }: Props) => {
+  const router = useRouter();
   const other = data.senderId || data.receiverId;
   const name =
     `${other?.firstName ?? ""} ${other?.lastName ?? ""}`.trim() || "Unknown";
   const initials = (other?.firstName?.charAt(0) ?? "U").toUpperCase();
+
+  const handleClick = () => {
+    router.replace(`/chat/${data._id}`);
+  };
 
   return (
     <div className="w-full flex items-center gap-4 p-4 border rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200">
@@ -26,6 +36,14 @@ const ConnectionCard = ({ data }: Props) => {
       <div className="text-xs text-muted-foreground">
         {new Date(data.createdAt).toLocaleString()}
       </div>
+      <Button
+        onClick={handleClick}
+        size={"sm"}
+        className="rounded-lg text-xs cursor-pointer"
+      >
+        Chat
+        <IconMessage />
+      </Button>
     </div>
   );
 };

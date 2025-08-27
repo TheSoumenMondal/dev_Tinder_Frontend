@@ -12,7 +12,7 @@ import { userApi } from "@/apis/user-api";
 import axiosInstance from "@/utils/axios-instance";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Menu, User, LogOut, Home, Heart, Users, Inbox } from "lucide-react";
+import { Menu, User, LogOut, Heart, Users, Inbox } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -45,14 +45,12 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      {/* Controlled login sheet for mobile trigger; no built-in trigger rendered */}
       <LoginSheet
         open={loginOpen}
         onOpenChange={setLoginOpen}
         renderTrigger={false}
       />
       <div className="container flex h-16 max-w-4xl mx-auto items-center justify-between px-4 border-b">
-        {/* Logo */}
         <Link
           href="/"
           className="flex items-center space-x-2 font-bold text-lg hover:opacity-80 transition-opacity"
@@ -117,10 +115,10 @@ const Navbar = () => {
                 <SheetTitle className="text-xl font-bold"></SheetTitle>
               </SheetHeader>
 
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {isAuthenticated ? (
                   <>
-                    <div className="space-y-2">
+                    <div className="space-y-1">
                       <SheetClose asChild>
                         <Link href="/feed" className="block">
                           <Button
@@ -185,7 +183,7 @@ const Navbar = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full max-w-xs justify-center gap-2"
+                          className="w-full justify-center gap-2"
                           onClick={handleLogout}
                         >
                           <LogOut className="w-4 h-4" />
@@ -195,18 +193,15 @@ const Navbar = () => {
                     </div>
                   </>
                 ) : (
-                  <>
+                  <div className="space-y-2">
                     <div className="flex justify-start pl-3">
                       <MobileThemeToggle />
                     </div>
-
-                    <Separator />
-
                     <div className="space-y-2">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="w-full justify-start gap-3 h-10"
+                        className="w-full justify-start gap-3"
                         onClick={() => {
                           setMobileMenuOpen(false);
                           setTimeout(() => setLoginOpen(true), 120);
@@ -216,7 +211,7 @@ const Navbar = () => {
                         <span>Login</span>
                       </Button>
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             </SheetContent>

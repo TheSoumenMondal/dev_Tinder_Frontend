@@ -73,7 +73,6 @@ export function LoginSheet({
     try {
       setIsLoading(true);
       const response = await axiosInstance.post(userApi.loginApi, data);
-      console.log(response.data);
       if (!response.data.data) {
         toast.error(response.data.message);
       }
@@ -101,9 +100,7 @@ export function LoginSheet({
   };
 
   const handleTriggerClick = () => {
-    // Call the external callback first (to close mobile menu)
     onTriggerClick?.();
-    // Then open the login sheet after a small delay to ensure mobile menu closes first
     setTimeout(() => {
       setIsOpen(true);
     }, 100);
@@ -136,7 +133,6 @@ export function LoginSheet({
           onSubmit={handleSubmit(onSubmit)}
           className="grid gap-3 p-3 pt-0 pb-2"
         >
-          {/* Email */}
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
