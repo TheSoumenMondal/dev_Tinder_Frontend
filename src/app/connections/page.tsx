@@ -10,7 +10,8 @@ const ConnectionsPage = () => {
   const [connections, setConnections] = React.useState<connectionType[]>([]);
   const getMyConnectionRequests = async () => {
     try {
-      const res = await axiosInstance.get(connectionApi.getMyRequests);
+      const res = await axiosInstance.get(connectionApi.getUserConnections);
+      console.log(res.data)
       setConnections(res.data.data);
     } catch (error) {}
   };

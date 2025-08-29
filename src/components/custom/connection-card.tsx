@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "../ui/button";
 import { IconMessage } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/utils/store";
 
 type Props = {
   data: connectionType;
@@ -12,13 +13,20 @@ type Props = {
 
 const ConnectionCard = ({ data }: Props) => {
   const router = useRouter();
-  const other = data.senderId || data.receiverId;
+  // Get the current user from the store
+  const { user } = useUserStore();
+  const currentUserId = user?._id;
+
+  // Determine which user is the other person in the connection
+  const other = data.senderId?._id === currentUserId ? data.receiverId : data.senderId;
   const name =
     `${other?.firstName ?? ""} ${other?.lastName ?? ""}`.trim() || "Unknown";
   const initials = (other?.firstName?.charAt(0) ?? "U").toUpperCase();
 
+  const redirectedUserId = user?._id === data.receiverId._id ? data.senderId._id : data.receiverId._id;
+
   const handleClick = () => {
-    router.replace(`/chat/${data._id}`);
+    router.replace(`/chat/${redirectedUserId}`);
   };
 
   return (

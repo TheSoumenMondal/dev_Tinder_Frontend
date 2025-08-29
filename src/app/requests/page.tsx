@@ -22,7 +22,7 @@ const RequestPage = () => {
         setIsLoading(true);
       }
       const response = await axiosInstance.get(
-        connectionApi.getUserConnections
+        connectionApi.getMyRequests
       );
       setPendingRequests(response.data.data || []);
     } catch (error) {

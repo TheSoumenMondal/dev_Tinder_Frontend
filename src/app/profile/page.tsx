@@ -48,6 +48,7 @@ const ProfilePage = () => {
       setInitialUser(response.data.data);
       toast.success("Profile updated successfully");
     } catch (error) {
+      console.log(error)
       toast.error("Failed to update profile");
     } finally {
       setLoading(false);
